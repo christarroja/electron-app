@@ -2,7 +2,8 @@ const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 const Database = require('better-sqlite3');
 
-const db = new Database('./videos.db');
+const dbPath = path.join(__dirname, 'videos.db');
+const db = new Database(dbPath);
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -10,7 +11,8 @@ const createWindow = () => {
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
-    }
+    },
+    icon: 'logo.png',
   })
 
   ipcMain.handle('ping', () => 'pong')
@@ -20,7 +22,6 @@ const createWindow = () => {
     const rows = statement.all();
     event.sender.send('query-result', rows);
   });
-
 
   // Open the DevTools.
   win.webContents.openDevTools()
